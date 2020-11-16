@@ -3,6 +3,7 @@ import numpy as np
 from PIL import ImageGrab
 from threading import Thread
 import time
+# import matplotlib.pyplot as plt
 
 import keyboard
 import mouse
@@ -29,17 +30,19 @@ def fish():
     im = np.asarray(ImageGrab.grab())
     v, h, _ = im.shape
     
-    vLow = floor(v * 0.521)
-    vHigh = ceil(v * 0.694)
-    hLow = floor(h * 0.492)
-    hHigh = ceil(h * 0.510)
-    step = ceil(v * 0.00347)
+    vLow = floor(v * 0.438)
+    vHigh = ceil(v * 0.478)
+    hLow = floor(h * 0.497)
+    hHigh = ceil(h * 0.500)
+    step = ceil(v * 0.00139)
 
     while FISHING:
         im = np.asarray(ImageGrab.grab())
         im = im[vLow:vHigh, hLow:hHigh, :]
+
+        # showImage(im)
         
-        if hasBobber(im, step):
+        if not hasBobber(im, step):
             mouse.click(button='right')
             time.sleep(0.5)
             mouse.click(button='right')
@@ -55,25 +58,24 @@ def hasBobber(im, step):
                 if im[i, j, 2] < 112:
                     return True
     return False
-# def hasBobber(im):
-#     v, h, _ = im.shape
-#     rcount = 0
-#     for i in range(0, v, 5):
-#         for j in range(h):
-#             if rcount > 10:
-#                 return True
-#             if im[i, j, 0] > 118:
-#                 rcount += 1
-#     return False
+
+# def showImage(im):
+#     plt.imshow(im)
+#     plt.show()
 
 def main():
+    print('Start Fishing: Ctrl + Alt + F')
+    print('Stop Fishing:  Ctrl + Alt + S')
+    print('Stop Script:   Ctrl + Alt + D')
+    print('Conditions:\n- Looking down 20 degrees\n- One block back from water\'s edge')
+    
     # hotkey to start fishing
     keyboard.add_hotkey('ctrl+alt+f', startFishing)
     # hotkey to stop fishing
     keyboard.add_hotkey('ctrl+alt+s', stopFishing)
-    
     # wait to exit until these keys are pressed
     keyboard.wait('ctrl+alt+d')
+
 
 if __name__ == "__main__":
     main()
